@@ -5,6 +5,10 @@ Gives Claude access to WorldMonitor's real-time global intelligence data
 (100+ sources) for synthesizing geopolitical, military, economic, and
 infrastructure briefings.
 
+This is an independent API client for the WorldMonitor platform
+(https://github.com/koala73/worldmonitor) by Elie Habib (AGPL-3.0).
+No WorldMonitor source code is included in this project.
+
 Security model (NIST CSF aligned):
   IDENTIFY  — All data flows are documented; only known API paths are callable.
   PROTECT   — Input validation, URL pinning, defused XML parsing, credential isolation.

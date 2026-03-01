@@ -31,7 +31,7 @@ pip install worldmonitor-mcp
 Or from source:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/worldmonitor-mcp
+git clone https://github.com/frederik12321/worldmonitor-memo
 cd worldmonitor-mcp
 pip install -e .
 ```
@@ -109,6 +109,14 @@ This server follows NIST Cybersecurity Framework (CSF) principles:
 - **Sanitised errors** — Error responses never leak internal URLs, paths, or credentials
 - **Credential isolation** — Secrets stay in environment variables, never in code
 
+## Attribution
+
+This MCP server is a **client** that consumes the public API of [WorldMonitor](https://github.com/koala73/worldmonitor), a real-time global intelligence dashboard created by **Elie Habib**. WorldMonitor is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](https://github.com/koala73/worldmonitor?tab=License-1-ov-file).
+
+This project does **not** include, copy, or modify any WorldMonitor source code — it communicates with a running WorldMonitor instance over HTTP. As an independent API client, this MCP server is licensed separately under MIT.
+
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
+
+The [WorldMonitor](https://github.com/koala73/worldmonitor) platform this server connects to is © 2024-2026 Elie Habib, licensed under [AGPL-3.0](https://github.com/koala73/worldmonitor/blob/main/LICENSE).
