@@ -4,31 +4,16 @@ Use the WorldMonitor Intelligence MCP tools to pull real-time data, then synthes
 
 ## Workflow
 
-### Phase 1: Global Situational Awareness (call in parallel)
-- `get_global_news_digest()` — all current headlines by category
-- `get_ft_news("home")` — Financial Times front page
-- `get_risk_scores()` — CII scores, identify countries with rising instability
-- `get_gdelt_tensions()` — inter-state tension pairs and PIZZINT status
-- `get_theater_posture()` — military posture across strategic theaters
-- `get_prediction_markets()` — forward-looking crowd signals
+### Phase 1: Global Briefing (single call)
+Call `get_global_briefing()` — this fetches news digest, risk scores, GDELT tensions, theater posture, prediction markets, market snapshot, and energy prices in parallel internally. One call, all core data.
 
-### Phase 2: Economic & Infrastructure Pulse (call in parallel)
-- `get_ft_news("markets")` — FT markets coverage
-- `get_market_snapshot()` — major indices, commodities, crypto
-- `get_macro_signals()` — 7-signal macro dashboard
-- `get_energy_prices()` — energy commodity prices
-- `get_chokepoint_status()` — maritime chokepoint disruptions
-- `get_shipping_rates()` — supply chain stress indicators
+### Phase 2: Country Deep-Dive (if country specified in $ARGUMENTS)
+Call `get_country_dashboard(country_code)` — fetches country intel brief, stock index, conflict events, humanitarian summary, and GDELT articles in parallel internally.
 
-### Phase 3: Country Deep-Dive (if country specified in $ARGUMENTS)
-- `get_country_intel(country_code)` — AI intelligence brief
-- `get_country_stock_index(country_code)` — local market
-- `get_conflict_events(country)` — ACLED events
-- `get_humanitarian_summary(country_code)` — humanitarian data
-- `search_gdelt_articles(country_name)` — sourced articles with URLs
+### Phase 3: Source Collection
+For the top 3-5 developing stories, call `search_gdelt_articles()` to collect article URLs for citations. Run these calls in parallel.
 
-### Phase 4: Source Collection
-For the top 3-5 developing stories, call `search_gdelt_articles()` to collect article URLs for citations.
+That's it — 3 phases, ~5 tool calls total.
 
 ## Output Format
 
