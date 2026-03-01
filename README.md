@@ -6,19 +6,47 @@ Use it with Claude Code's `/memo` skill to generate intelligence briefings on de
 
 ## What it does
 
-33 tools that let Claude pull live data:
+38 tools across 12 categories, with TTL caching, async I/O, composite aggregation, and delta detection:
 
 | Category | Tools |
 |----------|-------|
 | **Intelligence** | CII risk scores, country intel briefs, GDELT tensions, PIZZINT, GDELT article search |
-| **News** | Global news digest (100+ feeds), Financial Times (8 sections) |
+| **News** | Global news digest (100+ feeds), FT headlines (public RSS) |
 | **Military** | Theater posture, military flights, USNI fleet report |
 | **Conflict & Unrest** | ACLED events, social unrest, humanitarian summaries |
-| **Markets & Economy** | Market quotes, commodities, crypto, macro signals, energy prices, FRED data, central bank rates |
+| **Markets & Economy** | Market quotes, commodities, crypto, macro signals, energy prices, FRED data, central bank rates, ETF flows |
 | **Supply Chain** | Shipping rates, chokepoint status, trade restrictions |
 | **Infrastructure** | Internet outages, cyber threats, submarine cable health |
 | **Maritime** | Vessel tracking, navigational warnings |
-| **Other** | Prediction markets, earthquakes, climate anomalies, wildfires, displacement data, ETF flows |
+| **Environment** | Earthquakes, climate anomalies, wildfires, displacement data |
+| **Composites** | Global briefing (9 endpoints), country dashboard (5 endpoints), market pulse (7 endpoints) |
+| **Monitoring** | What's-new delta detection, cache status, server health |
+| **Other** | Prediction markets |
+
+## Architecture
+
+```
+worldmonitor_mcp/
+  server.py          # FastMCP init, lifespan, composite/monitoring tools
+  client.py          # Async HTTP client, TTL cache integration, health tracking
+  cache.py           # In-memory TTL cache (3-tier: 3min / 10min / 30min)
+  validation.py      # Input validation (NIST CSF: PROTECT)
+  trimmer.py         # Response size control (8KB default, 16KB composites)
+  delta.py           # Change detection between successive API responses
+  tools/             # Domain tool modules (async, cached)
+    intelligence.py, news.py, military.py, conflict.py, markets.py,
+    supply_chain.py, infrastructure.py, maritime.py, environment.py,
+    other.py, composites.py
+tests/               # 58 tests (cache, validation, trimmer, delta)
+```
+
+**Key engineering features:**
+- **Async throughout** — all tools are `async def`, HTTP calls use `httpx.AsyncClient`, composite tools use `asyncio.gather()` for parallel fetching
+- **3-tier TTL cache** — fast (3min: markets, flights), medium (10min: news, conflict), slow (30min: risk scores, posture). No external dependencies
+- **Response trimming** — strips null fields, caps list sizes, binary-search truncation to stay within token budgets
+- **Composite tools** — `get_global_briefing()` replaces 12 individual calls; `get_country_dashboard(cc)` replaces 5; `get_market_pulse()` replaces 7
+- **Delta detection** — `get_whats_new()` tracks which data sources changed since last check
+- **API health tracking** — per-endpoint success rates and latency via `get_server_status()`
 
 ## Quick start
 
@@ -85,11 +113,18 @@ cp skills/memo.md ~/.claude/commands/memo.md
 /memo IR        # global + Iran focus
 ```
 
-Or just talk to Claude naturally — it has access to all 33 tools:
+Or just talk to Claude naturally — it has access to all 38 tools:
 
 > "What's the current military posture in the Indo-Pacific theater?"
 > "Show me countries with rising instability scores"
-> "What are the FT's top stories today?"
+> "What changed since my last briefing?"
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+pytest tests/ -v
+```
 
 ## Environment variables
 

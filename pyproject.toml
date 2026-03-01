@@ -1,6 +1,6 @@
 [project]
 name = "worldmonitor-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP server that gives Claude access to WorldMonitor's real-time global intelligence data"
 readme = "README.md"
 license = { text = "MIT" }
@@ -9,6 +9,12 @@ dependencies = [
     "mcp[cli]>=1.0",
     "httpx>=0.27",
     "defusedxml>=0.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
 ]
 
 [project.scripts]
@@ -20,3 +26,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["worldmonitor_mcp"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
