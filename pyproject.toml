@@ -1,0 +1,22 @@
+[project]
+name = "worldmonitor-mcp"
+version = "0.1.0"
+description = "MCP server that gives Claude access to WorldMonitor's real-time global intelligence data"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.0",
+    "httpx>=0.27",
+    "defusedxml>=0.7",
+]
+
+[project.scripts]
+worldmonitor-mcp = "worldmonitor_mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["worldmonitor_mcp"]
